@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MySQL
+  mysqldb:
+    container_name: mysql8
+    restart: unless-stopped
+    image: mysql:8.0
+    env_file: ./.env
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      #  MYSQL_ROOT_PASSWORD: "$DB_PASS"
+       MYSQL_DATABASE: "$DB_NAME"
+       MYSQL_USER: "$DB_USER"
+       MYSQL_PASSWORD: "$DB_PASS" 
+       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+
+    ports:
+      - $DB_PORT:$DB_DOCKER_PORT
+    volumes:
+      - './docker/db/data:/var/lib/mysql'
+      - './docker/db/my.cnf:/etc/mysql/conf.d/my.cnf'
+      - './docker/db/sql:/docker-entrypoint-initdb.d'
+  app:
+    depends_on:
+      - mysqldb
+    build: ./
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $PORT_APP:$DOCKER_PORT_APP
+    environment:
+      - DB_HOST=mysqldb
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASS
+      - DB_NAME=$DB_NAME
+      - DB_PORT=$DB_DOCKER_PORT
+    stdin_open: true
+    tty: true
+volumes:
+  db:
