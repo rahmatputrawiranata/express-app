@@ -3,5 +3,5 @@ node_modules
 .env
 dist
 docker
-.nyc_ouput
+.nyc_output
 coverage
