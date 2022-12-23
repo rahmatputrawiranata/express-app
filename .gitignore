@@ -5,3 +5,5 @@ dist
 docker
 .nyc_output
 coverage
+.env.local
+.env.test
