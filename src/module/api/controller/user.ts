@@ -1,30 +1,25 @@
-import { PrismaClient } from '@prisma/client'
-import { Response, Request } from "express";
+import { PrismaClient, User } from '@prisma/client'
+import { Response, Request, NextFunction } from "express";
 const prisma = new PrismaClient()
 
 const all = async(req: Request, res: Response) => {
     const query = req.query
-    const page: number  = isNaN(Number(query.page)) ? 1 : Number(query.page)
-    const limit: number = isNaN(Number(query.page)) ? 10 : Number(query.limit)
-
+    const page: number  = isNaN(Number(query?.page)) ? 1 : Number(query.page)
+    const limit: number = isNaN(Number(query?.page)) ? 10 : Number(query.limit)
     const take = limit
     const skip = (page - 1) * take
     
     const where: {
-        first_name?: {
-            contains: string
-        },
-        last_name?: {
-            contains: string
+        id?: {
+            in: number[]
         }
     } = {}
     
     if(query?.keyword) {
-        where.first_name = {
-            contains: String(query.keyword)
-        }
-        where.last_name = {
-            contains: String(query.keyword)
+        const keyword = `%${query.keyword}%`
+        const userIds: User[] = await prisma.$queryRaw`SELECT id FROM user WHERE CONCAT_WS(' ', first_name, last_name) LIKE ${keyword}`
+        where.id = {
+            in: userIds.map(item => item.id)
         }
     }
 
@@ -38,11 +33,11 @@ const all = async(req: Request, res: Response) => {
             where
         })
     ]);
-    return res.json({
+    return res.status(200).json({
         status: true,
         message: "success",
         resp_data: {
-            totalItem,
+            total_item: totalItem,
             data: users
         }
     })
@@ -53,7 +48,7 @@ const detail = async(req: Request, res: Response) => {
     const param = req.params
     const id: number = Number(param.id)
     if(isNaN(id)){
-        return res.json({
+        return res.status(400).json({
             status: false,
             message: "invalid user id",
             resp_data: null
@@ -65,7 +60,7 @@ const detail = async(req: Request, res: Response) => {
         }
     })
 
-    return res.json({
+    return res.status(200).json({
         status: true,
         message: 'success',
         resp_data: user
@@ -82,7 +77,7 @@ const store = async(req: Request, res: Response) => {
         }
     })
 
-    return res.json({
+    return res.status(200).json({
         status: true,
         message: 'success',
         resp_data: user
@@ -116,7 +111,7 @@ const update = async(req: Request, res: Response) => {
         }
     })
 
-    return res.json({
+    return res.status(200).json({
         status: true,
         message: 'success',
         resp_data: user
@@ -133,13 +128,11 @@ const destroy = async(req: Request, res: Response) => {
     })
 
     if(!isUserExists) {
-        if(!isUserExists) {
-            return res.status(400).json({
-                status: false,
-                message: 'user not found',
-                resp_data: null
-            })
-        }
+        return res.status(400).json({
+            status: false,
+            message: 'user not found',
+            resp_data: null
+        })
     }
 
     await prisma.user.delete({
@@ -148,7 +141,7 @@ const destroy = async(req: Request, res: Response) => {
         }
     })
 
-    return res.json({
+    return res.status(200).json({
         status: true,
         message: 'success delete users',
         resp_data: null

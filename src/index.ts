@@ -1,4 +1,8 @@
 import { api } from "./config";
 
 // init api
-api
+const app = () => {
+    api
+}
+
+export default app;

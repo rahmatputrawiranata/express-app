@@ -1,4 +1,4 @@
-import express, {Express, Request, Response} from 'express'
+import express, {Express, NextFunction, Request, Response} from 'express'
 import dotenv from 'dotenv'
 import router from '../module/api/router';
 import bodyParser from 'body-parser';
@@ -12,6 +12,7 @@ const {
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+// High level error handling
 app.use('/', router)
 
 app.listen(PORT_APP, () => {

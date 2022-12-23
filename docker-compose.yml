@@ -6,14 +6,13 @@ services:
     container_name: mysql8
     restart: unless-stopped
     image: mysql:8.0
-    env_file: ./.env
+    env_file: ./.env.local
     command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       #  MYSQL_ROOT_PASSWORD: "$DB_PASS"
        MYSQL_DATABASE: "$DB_NAME"
        MYSQL_USER: "$DB_USER"
-       MYSQL_PASSWORD: "$DB_PASS" 
-       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+       MYSQL_ALLOW_EMPTY_PASSWORD: "nyes"
 
     ports:
       - $DB_PORT:$DB_DOCKER_PORT
