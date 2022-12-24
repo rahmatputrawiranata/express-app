@@ -1,8 +1,6 @@
-import { api } from "./config";
-
-// init api
-const app = () => {
-    api
+import {api } from "./config";
+const app = async() => {
+    await api
 }
 
 export default app;

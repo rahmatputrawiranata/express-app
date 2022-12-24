@@ -7,6 +7,9 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^4.8.0",
+    "@sendgrid/mail": "^7.7.0",
+    "@types/amqplib": "^0.10.1",
+    "amqplib": "^0.10.3",
     "body-parser": "^1.20.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -22,7 +25,7 @@
     "test:coverage": "nyc yarn run test",
     "prisma:migrate": "yarn set-env-local yarn prisma migrate deploy",
     "prisma:migrate-test": "yarn set-env-test yarn prisma migrate deploy",
-    "dev": "yarn set-env-local concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "yarn set-env-local concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\""
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
