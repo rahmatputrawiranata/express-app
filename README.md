@@ -1,10 +1,12 @@
 # Express App
 
+##Insomnia Collectio
+
+get the insomnia collection in insomnia.json at root directory
 
 ## How to set up
 
 - ### Dev environtment
-
     - make `.env.local` file or copy with below command to create an env local file for your local machine
         ```sh
         cp .env.example .env.local
@@ -15,9 +17,12 @@
         ```sh
         yarn install
         ```
-        
+    - set up rabbit mq with docker
+        ```sh
+        docker-compose up -d
+        ```
     - run prisma migration using `yarn prisma:migrate` to migrate database structure to your database
-    - run `yarn dev` to start the development
+    - run `yarn build && yarn dev` to start the development
 
 - ### Test environtment
     - make `.env.test` file or copy with below command to create an env local file for your local machine
@@ -34,3 +39,4 @@
     - run prisma migration using `yarn prisma:migrate-test` to migrate database structure to your test database
     - run `yarn:test` to run unit test
     - run `yarn test:coverage` to run unit test and coverage
+
